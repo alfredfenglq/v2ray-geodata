@@ -40,15 +40,21 @@ endef
 GEOIP_URL:=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat
 GEOSITE_URL:=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat
 
+define Build/Prepare
+	mkdir -p $(PKG_BUILD_DIR)
+	wget -O $(PKG_BUILD_DIR)/geoip.dat $(GEOIP_URL)
+	wget -O $(PKG_BUILD_DIR)/geosite.dat $(GEOSITE_URL)
+endef
+
 define Build/Compile
-	( \
-		pushd $(PKG_BUILD_DIR) ; \
-		curl -L $(GEOIP_URL) -o geoip.dat --progress-bar ; \
-		curl -L $(GEOSITE_URL) -o geosite.dat --progress-bar ; \
-		[ "$(curl -sL $(GEOIP_URL).sha256sum | awk '{print $1}')" != "$(sha256sum geoip.dat | awk '{print $1}')" ] && exit 1 ; \
-		[ "$(curl -sL $(GEOSITE_URL).sha256sum | awk '{print $1}')" != "$(sha256sum geosite.dat | awk '{print $1}')" ] && exit 1 ; \
-		popd ; \
-	)
+#	( \
+#		pushd $(PKG_BUILD_DIR) ; \
+#		curl -L $(GEOIP_URL) -o geoip.dat --progress-bar ; \
+#		curl -L $(GEOSITE_URL) -o geosite.dat --progress-bar ; \
+#		[ "$(curl -sL $(GEOIP_URL).sha256sum | awk '{print $1}')" != "$(sha256sum geoip.dat | awk '{print $1}')" ] && exit 1 ; \
+#		[ "$(curl -sL $(GEOSITE_URL).sha256sum | awk '{print $1}')" != "$(sha256sum geosite.dat | awk '{print $1}')" ] && exit 1 ; \
+#		popd ; \
+#	)
 endef
 
 define Package/v2ray-geoip/install
